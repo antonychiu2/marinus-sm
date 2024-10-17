@@ -40,7 +40,7 @@ module.exports = {
             promise = tpdModel.find({ 'zones.zone': mongoSanitize.sanitize({ data: zone }).data }).exec();
         } else {
             promise = tpdModel.find({
-                'zones.zone': zone,
+                'zones.zone': mongoSanitize.sanitize({ data: zone }).data,
             }, { 'tld': 1, 'zones.zone': 1 }).exec();
         }
         return (promise);
