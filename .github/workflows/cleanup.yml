@@ -40,9 +40,6 @@ jobs:
       - name: List all projects and fetch vulnerability reports
         id: list-reports
         run: |
-          # Define the GraphQL query to list projects
-          # LIST_PROJECT_QUERY='{"query":"query GetProject($projectId: uuid!) { project_by_pk(id: $projectId) { name id isDefault organizationId vulnerabilityReports: lastAnalysedVulReports(where: {fixReport: {state: {_in: [Finished, Initialized, Expired]}, repoArchiveId: {_is_null: false}}}) { vendor name id fixReport { id fixesDoneCount fixesInprogressCount fixesReadyCount issueLanguages issueTypes fixesCountByEffort vulnerabilitySeverities fixes_aggregate { aggregate { count } } repo { originalUrl reference name } createdOn expirationOn createdByUser { email } state } } } }","variables":{"projectId":"'$PROJECT_ID'"},"operationName":"GetProject"}'
-          
           # Execute the query to get all projects
           LIST_PROJECT_QUERY=$(
             jq -n --arg projectId "$PROJECT_ID" --arg unfinishedMaxTimestamp "2024-01-01T00:00:00.000Z" '{
@@ -145,10 +142,67 @@ jobs:
       - name: Verify deletion by listing projects again
         run: |
           # Execute the same query to ensure there are no more reports left
-          LIST_PROJECT_QUERY='{"query":"query GetProject($projectId: uuid!) { project_by_pk(id: $projectId) { name id isDefault organizationId vulnerabilityReports: lastAnalysedVulReports(where: {fixReport: {state: {_in: [Finished, Initialized, Expired]}, repoArchiveId: {_is_null: false}}}) { vendor name id fixReport { id fixesDoneCount fixesInprogressCount fixesReadyCount issueLanguages issueTypes fixesCountByEffort vulnerabilitySeverities fixes_aggregate { aggregate { count } } repo { originalUrl reference name } createdOn expirationOn createdByUser { email } state } } } }","variables":{"projectId":"'$PROJECT_ID'"},"operationName":"GetProject"}'
+          # Execute the query to get all projects
+          LIST_PROJECT_QUERY=$(
+            jq -n --arg projectId "$PROJECT_ID" --arg unfinishedMaxTimestamp "2024-01-01T00:00:00.000Z" '{
+              query: "query GetProject($projectId: uuid!, $unfinishedMaxTimestamp: timestamptz!) {
+                project_by_pk(id: $projectId) {
+                  name
+                  id
+                  isDefault
+                  organizationId
+                  vulnerabilityReports: lastAnalysedVulReports(
+                    where: {
+                      _or: [
+                        {fixReport: {state: {_in: [Finished, Initialized, Expired]}, repoArchiveId: {_is_null: false}}},
+                        {fixReport: {state: {_in: [Created, Digested, Requested]}, createdOn: {_gte: $unfinishedMaxTimestamp}}}
+                      ]
+                    }
+                  ) {
+                    vendor
+                    name
+                    id
+                    fixReport {
+                      id
+                      fixesDoneCount
+                      fixesInprogressCount
+                      fixesReadyCount
+                      issueLanguages
+                      issueTypes
+                      fixesCountByEffort
+                      vulnerabilitySeverities
+                      fixes_aggregate {
+                        aggregate {
+                          count
+                        }
+                      }
+                      repo {
+                        originalUrl
+                        reference
+                        name
+                      }
+                      createdOn
+                      expirationOn
+                      createdByUser {
+                        email
+                      }
+                      state
+                    }
+                  }
+                }
+              }",
+              variables: {
+                projectId: $projectId,
+                unfinishedMaxTimestamp: $unfinishedMaxTimestamp
+              },
+              operationName: "GetProject"
+            }'
+          )
           
-          RESPONSE=$(curl -s -X POST -H "Content-Type: application/json" -H "x-mobb-key: $MOBB_API_TOKEN" -d "$LIST_PROJECT_QUERY" https://api.mobb.ai/v1/graphql)
+          RESPONSE=$(curl -s -X POST \
+            -H "Content-Type: application/json" \
+            -H "x-mobb-key: $MOBB_API_TOKEN" \
+            -d "$LIST_PROJECT_QUERY" \
+            https://api.mobb.ai/v1/graphql)
           
-          # Print the results to verify deletion
-          echo "Updated Vulnerability Reports:"
-          echo $RESPONSE | jq '.data.project_by_pk.vulnerabilityReports'
+          echo "Response: $RESPONSE"
