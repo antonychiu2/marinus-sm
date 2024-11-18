@@ -46,6 +46,9 @@ jobs:
           # Execute the query to get all projects
           RESPONSE=$(curl -s -X POST -H "Content-Type: application/json" -H "x-mobb-key: $MOBB_API_TOKEN" -d "$LIST_PROJECT_QUERY" https://api.mobb.ai/v1/graphql)
 
+          echo "curl reponse:"
+          echo $RESPONSE
+          
           # Parse the vulnerability reports from the response
           echo "Vulnerability Reports:"
           echo $RESPONSE | jq '.data.project_by_pk.vulnerabilityReports' > reports.json
