@@ -132,7 +132,7 @@ jobs:
             '{"query":"mutation MakeVulnerabilityReportDeleted($vendor: vulnerability_report_vendor_enum, $originalUrl: String!, $reference: String!, $projectId: uuid!) { update_vulnerability_report(where: {vendor: {_eq: $vendor}, projectId: {_eq: $projectId}, fixReport: {repo: {originalUrl: {_eq: $originalUrl}, reference: {_eq: $reference}}}}, _set: {isDeleted: true}) { affected_rows }}","variables":{"vendor":$vendor,"originalUrl":$originalUrl,"reference":$reference,"projectId":$projectId},"operationName":"MakeVulnerabilityReportDeleted"}')
 
             # Execute the mutation to delete the report
-            # curl -s -X POST -H "Content-Type: application/json" -H "x-mobb-key: $MOBB_API_TOKEN" -d "$DELETE_REPORT_MUTATION" https://api.mobb.ai/v1/graphql
+            curl -s -X POST -H "Content-Type: application/json" -H "x-mobb-key: $MOBB_API_TOKEN" -d "$DELETE_REPORT_MUTATION" https://api.mobb.ai/v1/graphql
           done
 
       - name: Verify deletion by listing projects again
