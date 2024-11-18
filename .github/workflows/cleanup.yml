@@ -41,13 +41,73 @@ jobs:
         id: list-reports
         run: |
           # Define the GraphQL query to list projects
-          LIST_PROJECT_QUERY='{"query":"query GetProject($projectId: uuid!) { project_by_pk(id: $projectId) { name id isDefault organizationId vulnerabilityReports: lastAnalysedVulReports(where: {fixReport: {state: {_in: [Finished, Initialized, Expired]}, repoArchiveId: {_is_null: false}}}) { vendor name id fixReport { id fixesDoneCount fixesInprogressCount fixesReadyCount issueLanguages issueTypes fixesCountByEffort vulnerabilitySeverities fixes_aggregate { aggregate { count } } repo { originalUrl reference name } createdOn expirationOn createdByUser { email } state } } } }","variables":{"projectId":"'$PROJECT_ID'"},"operationName":"GetProject"}'
-
+          # LIST_PROJECT_QUERY='{"query":"query GetProject($projectId: uuid!) { project_by_pk(id: $projectId) { name id isDefault organizationId vulnerabilityReports: lastAnalysedVulReports(where: {fixReport: {state: {_in: [Finished, Initialized, Expired]}, repoArchiveId: {_is_null: false}}}) { vendor name id fixReport { id fixesDoneCount fixesInprogressCount fixesReadyCount issueLanguages issueTypes fixesCountByEffort vulnerabilitySeverities fixes_aggregate { aggregate { count } } repo { originalUrl reference name } createdOn expirationOn createdByUser { email } state } } } }","variables":{"projectId":"'$PROJECT_ID'"},"operationName":"GetProject"}'
+          
           # Execute the query to get all projects
-          RESPONSE=$(curl -s -X POST -H "Content-Type: application/json" -H "x-mobb-key: $MOBB_API_TOKEN" -d "$LIST_PROJECT_QUERY" https://api.mobb.ai/v1/graphql)
+          LIST_PROJECT_QUERY=$(
+            jq -n --arg projectId "$PROJECT_ID" --arg unfinishedMaxTimestamp "$UNFINISHED_MAX_TIMESTAMP" '{
+              query: "query GetProject($projectId: uuid!, $unfinishedMaxTimestamp: timestamptz!) {
+                project_by_pk(id: $projectId) {
+                  name
+                  id
+                  isDefault
+                  organizationId
+                  vulnerabilityReports: lastAnalysedVulReports(
+                    where: {
+                      _or: [
+                        {fixReport: {state: {_in: [Finished, Initialized, Expired]}, repoArchiveId: {_is_null: false}}},
+                        {fixReport: {state: {_in: [Created, Digested, Requested]}, createdOn: {_gte: $unfinishedMaxTimestamp}}}
+                      ]
+                    }
+                  ) {
+                    vendor
+                    name
+                    id
+                    fixReport {
+                      id
+                      fixesDoneCount
+                      fixesInprogressCount
+                      fixesReadyCount
+                      issueLanguages
+                      issueTypes
+                      fixesCountByEffort
+                      vulnerabilitySeverities
+                      fixes_aggregate {
+                        aggregate {
+                          count
+                        }
+                      }
+                      repo {
+                        originalUrl
+                        reference
+                        name
+                      }
+                      createdOn
+                      expirationOn
+                      createdByUser {
+                        email
+                      }
+                      state
+                    }
+                  }
+                }
+              }",
+              variables: {
+                projectId: $projectId,
+                unfinishedMaxTimestamp: $unfinishedMaxTimestamp
+              },
+              operationName: "GetProject"
+            }'
+          )
+          
+          RESPONSE=$(curl -s -X POST \
+            -H "Content-Type: application/json" \
+            -H "x-mobb-key: $MOBB_API_TOKEN" \
+            -d "$LIST_PROJECT_QUERY" \
+            https://api.mobb.ai/v1/graphql)
+          
+          echo "Response: $RESPONSE"
 
-          echo "curl reponse:"
-          echo $RESPONSE
           
           # Parse the vulnerability reports from the response
           echo "Vulnerability Reports:"
