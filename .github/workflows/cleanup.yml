@@ -45,7 +45,7 @@ jobs:
           
           # Execute the query to get all projects
           LIST_PROJECT_QUERY=$(
-            jq -n --arg projectId "$PROJECT_ID" --arg unfinishedMaxTimestamp "$UNFINISHED_MAX_TIMESTAMP" '{
+            jq -n --arg projectId "$PROJECT_ID" --arg unfinishedMaxTimestamp "2024-01-01T00:00:00.000Z" '{
               query: "query GetProject($projectId: uuid!, $unfinishedMaxTimestamp: timestamptz!) {
                 project_by_pk(id: $projectId) {
                   name
