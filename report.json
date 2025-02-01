@@ -10,6 +10,126 @@
           "version": "1.0.0",
           "rules": [
             {
+              "id": "javascript/NoSqli",
+              "name": "NoSqli",
+              "shortDescription": {
+                "text": "NoSQL Injection"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "markdown": "## Details\n\nIn an NoSQL injection attack, the user can submit an NoSQL query directly to the database, gaining access without providing appropriate credentials. Attackers can then view, export, modify, and delete confidential information; change passwords and other authentication information; and possibly gain access to other systems within the network. This is one of the most commonly exploited categories of vulnerability, but can largely be avoided through good coding practices.",
+                "text": ""
+              },
+              "properties": {
+                "tags": [
+                  "javascript",
+                  "NoSqli",
+                  "Security",
+                  "SourceServer",
+                  "SourceHttpParam",
+                  "Taint"
+                ],
+                "categories": [
+                  "Security"
+                ],
+                "exampleCommitFixes": [
+                  {
+                    "commitURL": "https://github.com/afuh/pinstagram/commit/776a6b63f84b3bc9d38963933ff511b319b73ac5?diff=split#diff-fb901db253d2190ed5dec3508eb32e99524e0b4dcacdaea322a50f2619ae2d99L-1",
+                    "lines": [
+                      {
+                        "line": "const user = await User.findOne({ slug: req.params.user }).populate('likes')\n",
+                        "lineNumber": 47,
+                        "lineChange": "removed"
+                      },
+                      {
+                        "line": "const user = await User.findOne({ _id: req.user._id }).populate('likes')\n",
+                        "lineNumber": 47,
+                        "lineChange": "added"
+                      }
+                    ]
+                  },
+                  {
+                    "commitURL": "https://github.com/mercmobily/hotplate/commit/c9dfbe8bf6bfd03838946d0898978543589a5ea2?diff=split#diff-bdb0afd700d4dfe1801bcfe39008d413182be643063835d326641fcce15b969aL-1",
+                    "lines": [
+                      {
+                        "line": "  Workspace.findOne({ _id: req.params.workspaceId }, function( err, doc ){\n",
+                        "lineNumber": 270,
+                        "lineChange": "removed"
+                      },
+                      {
+                        "line": "  workspaces.findOne({ _id: ObjectId(req.params.workspaceId) }, function( err, doc ){\n",
+                        "lineNumber": 264,
+                        "lineChange": "added"
+                      },
+                      {
+                        "line": "    resUtils.checkFindOneResponse( err, doc, next, function(){\n",
+                        "lineNumber": 271,
+                        "lineChange": "none"
+                      },
+                      {
+                        "line": "\n",
+                        "lineNumber": 272,
+                        "lineChange": "none"
+                      },
+                      {
+                        "line": "      perms.checkPermissions( req, next, 'workspaceConfig/get', req.body, doc, function(){\n",
+                        "lineNumber": 273,
+                        "lineChange": "none"
+                      },
+                      {
+                        "line": "      sendResponse( res, doc.settings );\n",
+                        "lineNumber": 274,
+                        "lineChange": "none"
+                      },
+                      {
+                        "line": "    });\n",
+                        "lineNumber": 275,
+                        "lineChange": "none"
+                      },
+                      {
+                        "line": "  });\n",
+                        "lineNumber": 276,
+                        "lineChange": "none"
+                      },
+                      {
+                        "line": "});\n",
+                        "lineNumber": 277,
+                        "lineChange": "none"
+                      }
+                    ]
+                  },
+                  {
+                    "commitURL": "https://github.com/JasonEtco/flintcms/commit/4ae34238ce39fde00dfa15082397541758c07af1?diff=split#diff-9abe922e7535c6f75fba7150a7a803a93be7ae235564b86f799db9f37e4c1674L-1",
+                    "lines": [
+                      {
+                        "line": "const token = req.query.t\n",
+                        "lineNumber": 103,
+                        "lineChange": "removed"
+                      },
+                      {
+                        "line": "const token = req.query.t.toString()\n",
+                        "lineNumber": 103,
+                        "lineChange": "added"
+                      },
+                      {
+                        "line": "const user = await User.findOne({ token })\n",
+                        "lineNumber": 104,
+                        "lineChange": "none"
+                      }
+                    ]
+                  }
+                ],
+                "exampleCommitDescriptions": [],
+                "precision": "very-high",
+                "repoDatasetSize": 30,
+                "cwe": [
+                  "CWE-943"
+                ]
+              }
+            },
+            {
               "id": "javascript/HTTPSourceWithUncheckedType",
               "name": "HTTPSourceWithUncheckedType",
               "shortDescription": {
@@ -205,1897 +325,14 @@
                   "CWE-1287"
                 ]
               }
-            },
-            {
-              "id": "javascript/NoSqli",
-              "name": "NoSqli",
-              "shortDescription": {
-                "text": "NoSQL Injection"
-              },
-              "defaultConfiguration": {
-                "level": "error"
-              },
-              "help": {
-                "markdown": "## Details\n\nIn an NoSQL injection attack, the user can submit an NoSQL query directly to the database, gaining access without providing appropriate credentials. Attackers can then view, export, modify, and delete confidential information; change passwords and other authentication information; and possibly gain access to other systems within the network. This is one of the most commonly exploited categories of vulnerability, but can largely be avoided through good coding practices.",
-                "text": ""
-              },
-              "properties": {
-                "tags": [
-                  "javascript",
-                  "NoSqli",
-                  "Security",
-                  "SourceServer",
-                  "SourceHttpParam",
-                  "Taint"
-                ],
-                "categories": [
-                  "Security"
-                ],
-                "exampleCommitFixes": [
-                  {
-                    "commitURL": "https://github.com/afuh/pinstagram/commit/776a6b63f84b3bc9d38963933ff511b319b73ac5?diff=split#diff-fb901db253d2190ed5dec3508eb32e99524e0b4dcacdaea322a50f2619ae2d99L-1",
-                    "lines": [
-                      {
-                        "line": "const user = await User.findOne({ slug: req.params.user }).populate('likes')\n",
-                        "lineNumber": 47,
-                        "lineChange": "removed"
-                      },
-                      {
-                        "line": "const user = await User.findOne({ _id: req.user._id }).populate('likes')\n",
-                        "lineNumber": 47,
-                        "lineChange": "added"
-                      }
-                    ]
-                  },
-                  {
-                    "commitURL": "https://github.com/mercmobily/hotplate/commit/c9dfbe8bf6bfd03838946d0898978543589a5ea2?diff=split#diff-bdb0afd700d4dfe1801bcfe39008d413182be643063835d326641fcce15b969aL-1",
-                    "lines": [
-                      {
-                        "line": "  Workspace.findOne({ _id: req.params.workspaceId }, function( err, doc ){\n",
-                        "lineNumber": 270,
-                        "lineChange": "removed"
-                      },
-                      {
-                        "line": "  workspaces.findOne({ _id: ObjectId(req.params.workspaceId) }, function( err, doc ){\n",
-                        "lineNumber": 264,
-                        "lineChange": "added"
-                      },
-                      {
-                        "line": "    resUtils.checkFindOneResponse( err, doc, next, function(){\n",
-                        "lineNumber": 271,
-                        "lineChange": "none"
-                      },
-                      {
-                        "line": "\n",
-                        "lineNumber": 272,
-                        "lineChange": "none"
-                      },
-                      {
-                        "line": "      perms.checkPermissions( req, next, 'workspaceConfig/get', req.body, doc, function(){\n",
-                        "lineNumber": 273,
-                        "lineChange": "none"
-                      },
-                      {
-                        "line": "      sendResponse( res, doc.settings );\n",
-                        "lineNumber": 274,
-                        "lineChange": "none"
-                      },
-                      {
-                        "line": "    });\n",
-                        "lineNumber": 275,
-                        "lineChange": "none"
-                      },
-                      {
-                        "line": "  });\n",
-                        "lineNumber": 276,
-                        "lineChange": "none"
-                      },
-                      {
-                        "line": "});\n",
-                        "lineNumber": 277,
-                        "lineChange": "none"
-                      }
-                    ]
-                  },
-                  {
-                    "commitURL": "https://github.com/JasonEtco/flintcms/commit/4ae34238ce39fde00dfa15082397541758c07af1?diff=split#diff-9abe922e7535c6f75fba7150a7a803a93be7ae235564b86f799db9f37e4c1674L-1",
-                    "lines": [
-                      {
-                        "line": "const token = req.query.t\n",
-                        "lineNumber": 103,
-                        "lineChange": "removed"
-                      },
-                      {
-                        "line": "const token = req.query.t.toString()\n",
-                        "lineNumber": 103,
-                        "lineChange": "added"
-                      },
-                      {
-                        "line": "const user = await User.findOne({ token })\n",
-                        "lineNumber": 104,
-                        "lineChange": "none"
-                      }
-                    ]
-                  }
-                ],
-                "exampleCommitDescriptions": [],
-                "precision": "very-high",
-                "repoDatasetSize": 30,
-                "cwe": [
-                  "CWE-943"
-                ]
-              }
-            },
-            {
-              "id": "javascript/reDOS",
-              "name": "reDOS",
-              "shortDescription": {
-                "text": "Regular Expression Denial of Service (ReDoS)"
-              },
-              "defaultConfiguration": {
-                "level": "error"
-              },
-              "help": {
-                "markdown": "## Details\n\nDenial of Service (DoS) describes a family of attacks, all aimed at making a system inaccessible to its original and legitimate users. There are many types of DoS attacks, ranging from trying to clog the network pipes to the system by generating a large volume of traffic from many machines (a Distributed Denial of Service - DDoS - attack) to sending crafted requests that cause a system to crash or take a disproportional amount of time to process.\n\nThe Regular expression Denial of Service (ReDoS) is a type of Denial of Service attack. Regular expressions are incredibly powerful, but they aren't very intuitive and can ultimately end up making it easy for attackers to take your site down.\n\nLet's take the following regular expression as an example:\n```js\nregex = /A(B|C+)+D/\n```\n\nThis regular expression accomplishes the following:\n- `A` The string must start with the letter 'A'\n- `(B|C+)+` The string must then follow the letter A with either the letter 'B' or some number of occurrences of the letter 'C' (the `+` matches one or more times). The `+` at the end of this section states that we can look for one or more matches of this section.\n- `D` Finally, we ensure this section of the string ends with a 'D'\n\nThe expression would match inputs such as `ABBD`, `ABCCCCD`, `ABCBCCCD` and `ACCCCCD`\n\nIt most cases, it doesn't take very long for a regex engine to find a match:\n\n```bash\n$ time node -e '/A(B|C+)+D/.test(\"ACCCCCCCCCCCCCCCCCCCCCCCCCCCCD\")'\n0.04s user 0.01s system 95% cpu 0.052 total\n\n$ time node -e '/A(B|C+)+D/.test(\"ACCCCCCCCCCCCCCCCCCCCCCCCCCCCX\")'\n1.79s user 0.02s system 99% cpu 1.812 total\n```\n\nThe entire process of testing it against a 30 characters long string takes around ~52ms. But when given an invalid string, it takes nearly two seconds to complete the test, over ten times as long as it took to test a valid string. The dramatic difference is due to the way regular expressions get evaluated.\n\nMost Regex engines will work very similarly (with minor differences). The engine will match the first possible way to accept the current character and proceed to the next one. If it then fails to match the next one, it will backtrack and see if there was another way to digest the previous character. If it goes too far down the rabbit hole only to find out the string doesn't match in the end, and if many characters have multiple valid regex paths, the number of backtracking steps can become very large, resulting in what is known as _catastrophic backtracking_.\n\nLet's look at how our expression runs into this problem, using a shorter string: \"ACCCX\". While it seems fairly straightforward, there are still four different ways that the engine could match those three C's:\n1. CCC\n2. CC+C\n3. C+CC\n4. C+C+C.\n\nThe engine has to try each of those combinations to see if any of them potentially match against the expression. When you combine that with the other steps the engine must take, we can use [RegEx 101 debugger](https://regex101.com/debugger) to see the engine has to take a total of 38 steps before it can determine the string doesn't match.\n\nFrom there, the number of steps the engine must use to validate a string just continues to grow.\n\n| String | Number of C's | Number of steps |\n| -------|-------------:| -----:|\n| ACCCX | 3 | 38\n| ACCCCX | 4 | 71\n| ACCCCCX | 5 | 136\n| ACCCCCCCCCCCCCCX | 14 | 65,553\n\n\nBy the time the string includes 14 C's, the engine has to take over 65,000 steps just to see if the string is valid. These extreme situations can cause them to work very slowly (exponentially related to input size, as shown above), allowing an attacker to exploit this and can cause the service to excessively consume CPU, resulting in a Denial of Service.",
-                "text": ""
-              },
-              "properties": {
-                "tags": [
-                  "javascript",
-                  "reDOS",
-                  "Security",
-                  "SourceServer",
-                  "SourceHttpParam",
-                  "Taint"
-                ],
-                "categories": [
-                  "Security"
-                ],
-                "exampleCommitFixes": [
-                  {
-                    "commitURL": "https://github.com/francisypl/mineranker/commit/e94ce7e5380a39e942492346e897f1c3f8c83e72?diff=split#diff-f1b621f1530c1dfc1923f77ae606c30a0be4a0c388840af21c17addc05ab6dcfL-1",
-                    "lines": [
-                      {
-                        "line": "    let options = {};\n",
-                        "lineNumber": 4,
-                        "lineChange": "removed"
-                      },
-                      {
-                        "line": "    let query = {};\n",
-                        "lineNumber": 5,
-                        "lineChange": "removed"
-                      },
-                      {
-                        "line": "\n",
-                        "lineNumber": 6,
-                        "lineChange": "removed"
-                      },
-                      {
-                        "line": "    var query = '';\n",
-                        "lineNumber": 4,
-                        "lineChange": "added"
-                      },
-                      {
-                        "line": "    // If there is a query param, else it is the empty\n",
-                        "lineNumber": 7,
-                        "lineChange": "none"
-                      },
-                      {
-                        "line": "    if (_.has(req.query, 'q')) {\n",
-                        "lineNumber": 8,
-                        "lineChange": "none"
-                      },
-                      {
-                        "line": "        var queryRegex = new RegExp(req.query.q, 'i');\n",
-                        "lineNumber": 9,
-                        "lineChange": "removed"
-                      },
-                      {
-                        "line": "        query = {name : {$regex : queryRegex}};\n",
-                        "lineNumber": 10,
-                        "lineChange": "removed"
-                      },
-                      {
-                        "line": "        query = req.query.q;\n",
-                        "lineNumber": 7,
-                        "lineChange": "added"
-                      },
-                      {
-                        "line": "    }\n",
-                        "lineNumber": 11,
-                        "lineChange": "none"
-                      },
-                      {
-                        "line": "\n",
-                        "lineNumber": 12,
-                        "lineChange": "none"
-                      },
-                      {
-                        "line": "    options.sort = [['_id', 'desc']];\n",
-                        "lineNumber": 13,
-                        "lineChange": "removed"
-                      },
-                      {
-                        "line": "\n",
-                        "lineNumber": 14,
-                        "lineChange": "removed"
-                      },
-                      {
-                        "line": "    ranker.fetchAll(query, options)\n",
-                        "lineNumber": 15,
-                        "lineChange": "removed"
-                      },
-                      {
-                        "line": "    ranker.fetchAll(query)\n",
-                        "lineNumber": 10,
-                        "lineChange": "added"
-                      }
-                    ]
-                  },
-                  {
-                    "commitURL": "https://github.com/XiaoMi/hiui/commit/488dd61cefe176af7097dfd7a3448bd190ecffff?diff=split#diff-ddbcffeff01d66de820d5badf769d19b42b8564953784470c52ad68cbc4b83f1L-1",
-                    "lines": [
-                      {
-                        "line": "return this.isRemote() || (!searchable || !keyword) || (searchable && keyword && (String(item.id).match(keyword) || String(item.name).match(keyword)))\n",
-                        "lineNumber": 407,
-                        "lineChange": "removed"
-                      },
-                      {
-                        "line": "return this.isRemote() || (!searchable || !keyword) || (searchable && keyword && (String(item.id).includes(keyword) || String(item.name).includes(keyword)))\n",
-                        "lineNumber": 407,
-                        "lineChange": "added"
-                      }
-                    ]
-                  },
-                  {
-                    "commitURL": "https://github.com/infor-design/enterprise/commit/51c32f05c358e7e01ca5b246c067299cd7993c1c?diff=split#diff-e07d531ac040ce3f40e0ce632ac2a059d7cd60f20e61f78268ac3be015b3b28fL-1",
-                    "lines": [
-                      {
-                        "line": "new RegExp('_' + type + '\\\\.scss'),\n",
-                        "lineNumber": 344,
-                        "lineChange": "removed"
-                      },
-                      {
-                        "line": "new RegExp('(\\d|\\w|\\s|-)*?\\.(scss)'),\n",
-                        "lineNumber": 344,
-                        "lineChange": "added"
-                      }
-                    ]
-                  }
-                ],
-                "exampleCommitDescriptions": [],
-                "precision": "very-high",
-                "repoDatasetSize": 81,
-                "cwe": [
-                  "CWE-400"
-                ]
-              }
             }
           ]
         }
       },
       "results": [
         {
-          "ruleId": "javascript/HTTPSourceWithUncheckedType",
+          "ruleId": "javascript/NoSqli",
           "ruleIndex": 0,
-          "level": "note",
-          "message": {
-            "text": "The type of this object, coming from query and the value of its split property can be controlled by the user. An attacker may craft the properties of the object to crash the application or bypass its logic. Consider checking the type of the object.",
-            "markdown": "The type of this {0}, coming from {1} and the value of its {2} property can be controlled by the user. An attacker may craft the properties of the object to crash the application or bypass its logic. Consider checking the type of the object.",
-            "arguments": [
-              "[object](0)",
-              "[query](1)",
-              "[split](2)"
-            ]
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "web_server/routes/sonar.js",
-                  "uriBaseId": "%SRCROOT%"
-                },
-                "region": {
-                  "startLine": 53,
-                  "endLine": 53,
-                  "startColumn": 23,
-                  "endColumn": 28
-                }
-              }
-            }
-          ],
-          "fingerprints": {
-            "0": "a3d7c46d5e20148ac397f6eacfef0a3cae5a94f493754e707368b1889c17787a",
-            "1": "099c30d7.bf4464f1.c13ab5fc.d7919eeb.ef9f7d82.8020cfdf.83265159.5f8fd171.4b4ab437.bf4464f1.9816fd83.59162423.1ea4aa7e.5fce695c.83265159.89d75565"
-          },
-          "codeFlows": [
-            {
-              "threadFlows": [
-                {
-                  "locations": [
-                    {
-                      "location": {
-                        "id": 0,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/sonar.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 53,
-                            "endLine": 53,
-                            "startColumn": 17,
-                            "endColumn": 22
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 1,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/sonar.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 215,
-                            "endLine": 215,
-                            "startColumn": 51,
-                            "endColumn": 56
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 2,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/sonar.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 53,
-                            "endLine": 53,
-                            "startColumn": 23,
-                            "endColumn": 28
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
-          "properties": {
-            "priorityScore": 367,
-            "priorityScoreFactors": [
-              {
-                "label": true,
-                "type": "multipleOccurrence"
-              },
-              {
-                "label": true,
-                "type": "hotFileCodeFlow"
-              },
-              {
-                "label": true,
-                "type": "fixExamples"
-              }
-            ],
-            "isAutofixable": true
-          }
-        },
-        {
-          "ruleId": "javascript/HTTPSourceWithUncheckedType",
-          "ruleIndex": 0,
-          "level": "note",
-          "message": {
-            "text": "The type of this object, coming from query and the value of its length property can be controlled by the user. An attacker may craft the properties of the object to crash the application or bypass its logic. Consider checking the type of the object.",
-            "markdown": "The type of this {0}, coming from {1} and the value of its {2} property can be controlled by the user. An attacker may craft the properties of the object to crash the application or bypass its logic. Consider checking the type of the object.",
-            "arguments": [
-              "[object](0)",
-              "[query](1)",
-              "[length](2)"
-            ]
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "web_server/routes/zones.js",
-                  "uriBaseId": "%SRCROOT%"
-                },
-                "region": {
-                  "startLine": 380,
-                  "endLine": 380,
-                  "startColumn": 38,
-                  "endColumn": 44
-                }
-              }
-            }
-          ],
-          "fingerprints": {
-            "0": "89facec506f325bd80b3beed6ce6d3321434a28cd269a88029ca0881445dede2",
-            "1": "d7990cfd.4773f344.6bb8eed2.c8688b2b.29fe289f.8020cfdf.96ea21a8.b0b52e9b.f90b0509.86f358a8.673eb66b.59162423.29fe289f.f8890b3c.83265159.3357ef26"
-          },
-          "codeFlows": [
-            {
-              "threadFlows": [
-                {
-                  "locations": [
-                    {
-                      "location": {
-                        "id": 0,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 380,
-                            "endLine": 380,
-                            "startColumn": 20,
-                            "endColumn": 37
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 1,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 380,
-                            "endLine": 380,
-                            "startColumn": 24,
-                            "endColumn": 29
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 2,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 380,
-                            "endLine": 380,
-                            "startColumn": 38,
-                            "endColumn": 44
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
-          "properties": {
-            "priorityScore": 417,
-            "priorityScoreFactors": [
-              {
-                "label": true,
-                "type": "multipleOccurrence"
-              },
-              {
-                "label": true,
-                "type": "hotFileSource"
-              },
-              {
-                "label": true,
-                "type": "fixExamples"
-              }
-            ],
-            "isAutofixable": true
-          }
-        },
-        {
-          "ruleId": "javascript/NoSqli",
-          "ruleIndex": 1,
-          "level": "error",
-          "message": {
-            "text": "Unsanitized input from an HTTP parameter flows into countDocuments, where it is used in an NoSQL query. This may result in an NoSQL Injection vulnerability.",
-            "markdown": "Unsanitized input from {0} {1} into {2}, where it is used in an NoSQL query. This may result in an NoSQL Injection vulnerability.",
-            "arguments": [
-              "[an HTTP parameter](0)",
-              "[flows](1),(2),(3),(4),(5),(6),(7),(8),(9),(10)",
-              "[countDocuments](11)"
-            ]
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "web_server/routes/zones.js",
-                  "uriBaseId": "%SRCROOT%"
-                },
-                "region": {
-                  "startLine": 245,
-                  "endLine": 245,
-                  "startColumn": 37,
-                  "endColumn": 49
-                }
-              }
-            }
-          ],
-          "fingerprints": {
-            "0": "0ffc5a6c69ab0dbcf3d2a7b5a3616fc3476e73392440cd2eef7d7aba5e702fd3",
-            "1": "5f2bf581.4773f344.607187b5.d7919eeb.ef9f7d82.8020cfdf.09093c61.fbac866d.5f2bf581.86f358a8.fa6e5b16.c559ebce.a753229a.f8890b3c.09093c61.fbac866d"
-          },
-          "codeFlows": [
-            {
-              "threadFlows": [
-                {
-                  "locations": [
-                    {
-                      "location": {
-                        "id": 0,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 240,
-                            "endLine": 240,
-                            "startColumn": 30,
-                            "endColumn": 35
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 1,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 240,
-                            "endLine": 240,
-                            "startColumn": 30,
-                            "endColumn": 35
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 2,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 240,
-                            "endLine": 240,
-                            "startColumn": 26,
-                            "endColumn": 35
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 3,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 245,
-                            "endLine": 245,
-                            "startColumn": 50,
-                            "endColumn": 56
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 4,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 48,
-                            "endLine": 48,
-                            "startColumn": 29,
-                            "endColumn": 35
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 5,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 50,
-                            "endLine": 50,
-                            "startColumn": 15,
-                            "endColumn": 21
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 6,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 50,
-                            "endLine": 50,
-                            "startColumn": 39,
-                            "endColumn": 45
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 7,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 51,
-                            "endLine": 51,
-                            "startColumn": 49,
-                            "endColumn": 55
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 8,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 51,
-                            "endLine": 51,
-                            "startColumn": 13,
-                            "endColumn": 18
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 9,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 54,
-                            "endLine": 54,
-                            "startColumn": 13,
-                            "endColumn": 18
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 10,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 58,
-                            "endLine": 58,
-                            "startColumn": 41,
-                            "endColumn": 46
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 11,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 58,
-                            "endLine": 58,
-                            "startColumn": 26,
-                            "endColumn": 40
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
-          "properties": {
-            "priorityScore": 875,
-            "priorityScoreFactors": [
-              {
-                "label": true,
-                "type": "multipleOccurrence"
-              },
-              {
-                "label": true,
-                "type": "hotFileSource"
-              },
-              {
-                "label": true,
-                "type": "fixExamples"
-              }
-            ],
-            "isAutofixable": false
-          }
-        },
-        {
-          "ruleId": "javascript/NoSqli",
-          "ruleIndex": 1,
-          "level": "error",
-          "message": {
-            "text": "Unsanitized input from an HTTP parameter flows into countDocuments, where it is used in an NoSQL query. This may result in an NoSQL Injection vulnerability.",
-            "markdown": "Unsanitized input from {0} {1} into {2}, where it is used in an NoSQL query. This may result in an NoSQL Injection vulnerability.",
-            "arguments": [
-              "[an HTTP parameter](0)",
-              "[flows](1),(2),(3),(4),(5),(6),(7),(8),(9),(10)",
-              "[countDocuments](11)"
-            ]
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "web_server/routes/zones.js",
-                  "uriBaseId": "%SRCROOT%"
-                },
-                "region": {
-                  "startLine": 898,
-                  "endLine": 898,
-                  "startColumn": 39,
-                  "endColumn": 51
-                }
-              }
-            }
-          ],
-          "fingerprints": {
-            "0": "a8614337ae7c31f6e95bb6c565cc0b29be198a11b9dbf917785f805ab98d6af8",
-            "1": "5f2bf581.4773f344.607187b5.d7919eeb.ef9f7d82.8020cfdf.09093c61.fbac866d.5f2bf581.86f358a8.fa6e5b16.c559ebce.a753229a.f8890b3c.09093c61.fbac866d"
-          },
-          "codeFlows": [
-            {
-              "threadFlows": [
-                {
-                  "locations": [
-                    {
-                      "location": {
-                        "id": 0,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 893,
-                            "endLine": 893,
-                            "startColumn": 30,
-                            "endColumn": 35
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 1,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 893,
-                            "endLine": 893,
-                            "startColumn": 30,
-                            "endColumn": 35
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 2,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 893,
-                            "endLine": 893,
-                            "startColumn": 26,
-                            "endColumn": 35
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 3,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 898,
-                            "endLine": 898,
-                            "startColumn": 52,
-                            "endColumn": 58
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 4,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ip_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 43,
-                            "endLine": 43,
-                            "startColumn": 29,
-                            "endColumn": 35
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 5,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ip_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 45,
-                            "endLine": 45,
-                            "startColumn": 15,
-                            "endColumn": 21
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 6,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ip_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 45,
-                            "endLine": 45,
-                            "startColumn": 39,
-                            "endColumn": 45
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 7,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ip_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 46,
-                            "endLine": 46,
-                            "startColumn": 31,
-                            "endColumn": 37
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 8,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ip_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 46,
-                            "endLine": 46,
-                            "startColumn": 13,
-                            "endColumn": 18
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 9,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ip_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 49,
-                            "endLine": 49,
-                            "startColumn": 13,
-                            "endColumn": 18
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 10,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ip_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 53,
-                            "endLine": 53,
-                            "startColumn": 43,
-                            "endColumn": 48
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 11,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ip_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 53,
-                            "endLine": 53,
-                            "startColumn": 28,
-                            "endColumn": 42
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
-          "properties": {
-            "priorityScore": 875,
-            "priorityScoreFactors": [
-              {
-                "label": true,
-                "type": "multipleOccurrence"
-              },
-              {
-                "label": true,
-                "type": "hotFileSource"
-              },
-              {
-                "label": true,
-                "type": "fixExamples"
-              }
-            ],
-            "isAutofixable": false
-          }
-        },
-        {
-          "ruleId": "javascript/NoSqli",
-          "ruleIndex": 1,
-          "level": "error",
-          "message": {
-            "text": "Unsanitized input from an HTTP parameter flows into countDocuments, where it is used in an NoSQL query. This may result in an NoSQL Injection vulnerability.",
-            "markdown": "Unsanitized input from {0} {1} into {2}, where it is used in an NoSQL query. This may result in an NoSQL Injection vulnerability.",
-            "arguments": [
-              "[an HTTP parameter](0)",
-              "[flows](1),(2),(3),(4),(5),(6),(7),(8),(9),(10)",
-              "[countDocuments](11)"
-            ]
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "web_server/routes/zones.js",
-                  "uriBaseId": "%SRCROOT%"
-                },
-                "region": {
-                  "startLine": 971,
-                  "endLine": 971,
-                  "startColumn": 41,
-                  "endColumn": 53
-                }
-              }
-            }
-          ],
-          "fingerprints": {
-            "0": "113da49b84234c51958b6c54c853d2aaee87c3251a514eef40784fd2fa98f10e",
-            "1": "5f2bf581.4773f344.607187b5.d7919eeb.ef9f7d82.8020cfdf.09093c61.fbac866d.5f2bf581.86f358a8.fa6e5b16.c559ebce.a753229a.f8890b3c.09093c61.fbac866d"
-          },
-          "codeFlows": [
-            {
-              "threadFlows": [
-                {
-                  "locations": [
-                    {
-                      "location": {
-                        "id": 0,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 966,
-                            "endLine": 966,
-                            "startColumn": 30,
-                            "endColumn": 35
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 1,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 966,
-                            "endLine": 966,
-                            "startColumn": 30,
-                            "endColumn": 35
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 2,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 966,
-                            "endLine": 966,
-                            "startColumn": 26,
-                            "endColumn": 35
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 3,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 971,
-                            "endLine": 971,
-                            "startColumn": 54,
-                            "endColumn": 60
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 4,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ipv6_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 42,
-                            "endLine": 42,
-                            "startColumn": 29,
-                            "endColumn": 35
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 5,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ipv6_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 44,
-                            "endLine": 44,
-                            "startColumn": 15,
-                            "endColumn": 21
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 6,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ipv6_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 44,
-                            "endLine": 44,
-                            "startColumn": 39,
-                            "endColumn": 45
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 7,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ipv6_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 45,
-                            "endLine": 45,
-                            "startColumn": 31,
-                            "endColumn": 37
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 8,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ipv6_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 45,
-                            "endLine": 45,
-                            "startColumn": 13,
-                            "endColumn": 18
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 9,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ipv6_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 48,
-                            "endLine": 48,
-                            "startColumn": 13,
-                            "endColumn": 18
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 10,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ipv6_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 52,
-                            "endLine": 52,
-                            "startColumn": 45,
-                            "endColumn": 50
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 11,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ipv6_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 52,
-                            "endLine": 52,
-                            "startColumn": 30,
-                            "endColumn": 44
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
-          "properties": {
-            "priorityScore": 875,
-            "priorityScoreFactors": [
-              {
-                "label": true,
-                "type": "multipleOccurrence"
-              },
-              {
-                "label": true,
-                "type": "hotFileSource"
-              },
-              {
-                "label": true,
-                "type": "fixExamples"
-              }
-            ],
-            "isAutofixable": false
-          }
-        },
-        {
-          "ruleId": "javascript/NoSqli",
-          "ruleIndex": 1,
-          "level": "error",
-          "message": {
-            "text": "Unsanitized input from an HTTP parameter flows into findOne, where it is used in an NoSQL query. This may result in an NoSQL Injection vulnerability.",
-            "markdown": "Unsanitized input from {0} {1} into {2}, where it is used in an NoSQL query. This may result in an NoSQL Injection vulnerability.",
-            "arguments": [
-              "[an HTTP parameter](0)",
-              "[flows](1),(2),(3),(4),(5),(6)",
-              "[findOne](7)"
-            ]
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "web_server/routes/zones.js",
-                  "uriBaseId": "%SRCROOT%"
-                },
-                "region": {
-                  "startLine": 309,
-                  "endLine": 309,
-                  "startColumn": 37,
-                  "endColumn": 57
-                }
-              }
-            }
-          ],
-          "fingerprints": {
-            "0": "bfd4f68510fa7ccb18dd8906f235d2754e6bded799453d1e52877f1d796b05a4",
-            "1": "5a562d4f.4773f344.607187b5.279a35c9.5c9ab2be.f8890b3c.09093c61.fbac866d.5a562d4f.86f358a8.607187b5.c559ebce.fb94980c.f8890b3c.09093c61.fbac866d"
-          },
-          "codeFlows": [
-            {
-              "threadFlows": [
-                {
-                  "locations": [
-                    {
-                      "location": {
-                        "id": 0,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 309,
-                            "endLine": 309,
-                            "startColumn": 62,
-                            "endColumn": 68
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 1,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 309,
-                            "endLine": 309,
-                            "startColumn": 62,
-                            "endColumn": 68
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 2,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 309,
-                            "endLine": 309,
-                            "startColumn": 58,
-                            "endColumn": 68
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 3,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 309,
-                            "endLine": 309,
-                            "startColumn": 58,
-                            "endColumn": 73
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 4,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 35,
-                            "endLine": 35,
-                            "startColumn": 37,
-                            "endColumn": 41
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 5,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 37,
-                            "endLine": 37,
-                            "startColumn": 21,
-                            "endColumn": 25
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 6,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 36,
-                            "endLine": 38,
-                            "startColumn": 34,
-                            "endColumn": 10
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 7,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 36,
-                            "endLine": 36,
-                            "startColumn": 26,
-                            "endColumn": 33
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
-          "properties": {
-            "priorityScore": 875,
-            "priorityScoreFactors": [
-              {
-                "label": true,
-                "type": "multipleOccurrence"
-              },
-              {
-                "label": true,
-                "type": "hotFileSource"
-              },
-              {
-                "label": true,
-                "type": "fixExamples"
-              }
-            ],
-            "isAutofixable": false
-          }
-        },
-        {
-          "ruleId": "javascript/NoSqli",
-          "ruleIndex": 1,
-          "level": "error",
-          "message": {
-            "text": "Unsanitized input from an HTTP parameter flows into findOne, where it is used in an NoSQL query. This may result in an NoSQL Injection vulnerability.",
-            "markdown": "Unsanitized input from {0} {1} into {2}, where it is used in an NoSQL query. This may result in an NoSQL Injection vulnerability.",
-            "arguments": [
-              "[an HTTP parameter](0)",
-              "[flows](1),(2),(3),(4),(5),(6)",
-              "[findOne](7)"
-            ]
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "web_server/routes/zones.js",
-                  "uriBaseId": "%SRCROOT%"
-                },
-                "region": {
-                  "startLine": 489,
-                  "endLine": 489,
-                  "startColumn": 39,
-                  "endColumn": 59
-                }
-              }
-            }
-          ],
-          "fingerprints": {
-            "0": "55aa6ee8f58055547ad2206bdf9ac890e203e9be10c66a20d0566b157def5972",
-            "1": "5a562d4f.4773f344.607187b5.279a35c9.5c9ab2be.f8890b3c.09093c61.fbac866d.5a562d4f.86f358a8.607187b5.c559ebce.fb94980c.f8890b3c.09093c61.bce50369"
-          },
-          "codeFlows": [
-            {
-              "threadFlows": [
-                {
-                  "locations": [
-                    {
-                      "location": {
-                        "id": 0,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 489,
-                            "endLine": 489,
-                            "startColumn": 64,
-                            "endColumn": 70
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 1,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 489,
-                            "endLine": 489,
-                            "startColumn": 64,
-                            "endColumn": 70
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 2,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 489,
-                            "endLine": 489,
-                            "startColumn": 60,
-                            "endColumn": 70
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 3,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 489,
-                            "endLine": 489,
-                            "startColumn": 60,
-                            "endColumn": 75
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 4,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ip_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 35,
-                            "endLine": 35,
-                            "startColumn": 37,
-                            "endColumn": 41
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 5,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ip_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 37,
-                            "endLine": 37,
-                            "startColumn": 21,
-                            "endColumn": 25
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 6,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ip_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 36,
-                            "endLine": 38,
-                            "startColumn": 36,
-                            "endColumn": 10
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 7,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ip_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 36,
-                            "endLine": 36,
-                            "startColumn": 28,
-                            "endColumn": 35
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
-          "properties": {
-            "priorityScore": 875,
-            "priorityScoreFactors": [
-              {
-                "label": true,
-                "type": "multipleOccurrence"
-              },
-              {
-                "label": true,
-                "type": "hotFileSource"
-              },
-              {
-                "label": true,
-                "type": "fixExamples"
-              }
-            ],
-            "isAutofixable": false
-          }
-        },
-        {
-          "ruleId": "javascript/NoSqli",
-          "ruleIndex": 1,
-          "level": "error",
-          "message": {
-            "text": "Unsanitized input from an HTTP parameter flows into findOne, where it is used in an NoSQL query. This may result in an NoSQL Injection vulnerability.",
-            "markdown": "Unsanitized input from {0} {1} into {2}, where it is used in an NoSQL query. This may result in an NoSQL Injection vulnerability.",
-            "arguments": [
-              "[an HTTP parameter](0)",
-              "[flows](1),(2),(3),(4),(5),(6)",
-              "[findOne](7)"
-            ]
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "web_server/routes/zones.js",
-                  "uriBaseId": "%SRCROOT%"
-                },
-                "region": {
-                  "startLine": 550,
-                  "endLine": 550,
-                  "startColumn": 41,
-                  "endColumn": 61
-                }
-              }
-            }
-          ],
-          "fingerprints": {
-            "0": "cc0fa7837d510d1989dec9f7a155cab847a685b53d20cd556c2a2fac55abb7b7",
-            "1": "5a562d4f.4773f344.607187b5.279a35c9.5c9ab2be.f8890b3c.09093c61.fbac866d.5a562d4f.86f358a8.8f955a09.c559ebce.fb94980c.f8890b3c.09093c61.fbac866d"
-          },
-          "codeFlows": [
-            {
-              "threadFlows": [
-                {
-                  "locations": [
-                    {
-                      "location": {
-                        "id": 0,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 550,
-                            "endLine": 550,
-                            "startColumn": 66,
-                            "endColumn": 72
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 1,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 550,
-                            "endLine": 550,
-                            "startColumn": 66,
-                            "endColumn": 72
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 2,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 550,
-                            "endLine": 550,
-                            "startColumn": 62,
-                            "endColumn": 72
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 3,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 550,
-                            "endLine": 550,
-                            "startColumn": 62,
-                            "endColumn": 77
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 4,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ipv6_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 34,
-                            "endLine": 34,
-                            "startColumn": 37,
-                            "endColumn": 41
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 5,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ipv6_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 36,
-                            "endLine": 36,
-                            "startColumn": 21,
-                            "endColumn": 25
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 6,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ipv6_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 35,
-                            "endLine": 37,
-                            "startColumn": 38,
-                            "endColumn": 10
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 7,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/ipv6_zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 35,
-                            "endLine": 35,
-                            "startColumn": 30,
-                            "endColumn": 37
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
-          "properties": {
-            "priorityScore": 875,
-            "priorityScoreFactors": [
-              {
-                "label": true,
-                "type": "multipleOccurrence"
-              },
-              {
-                "label": true,
-                "type": "hotFileSource"
-              },
-              {
-                "label": true,
-                "type": "fixExamples"
-              }
-            ],
-            "isAutofixable": false
-          }
-        },
-        {
-          "ruleId": "javascript/NoSqli",
-          "ruleIndex": 1,
           "level": "error",
           "message": {
             "text": "Unsanitized input from an HTTP parameter flows into findOne, where it is used in an NoSQL query. This may result in an NoSQL Injection vulnerability.",
@@ -2273,7 +510,7 @@
             }
           ],
           "properties": {
-            "priorityScore": 875,
+            "priorityScore": 867,
             "priorityScoreFactors": [
               {
                 "label": true,
@@ -2293,7 +530,7 @@
         },
         {
           "ruleId": "javascript/NoSqli",
-          "ruleIndex": 1,
+          "ruleIndex": 0,
           "level": "error",
           "message": {
             "text": "Unsanitized input from an HTTP parameter flows into findOne, where it is used in an NoSQL query. This may result in an NoSQL Injection vulnerability.",
@@ -2471,7 +708,7 @@
             }
           ],
           "properties": {
-            "priorityScore": 875,
+            "priorityScore": 867,
             "priorityScoreFactors": [
               {
                 "label": true,
@@ -2490,37 +727,37 @@
           }
         },
         {
-          "ruleId": "javascript/NoSqli",
+          "ruleId": "javascript/HTTPSourceWithUncheckedType",
           "ruleIndex": 1,
-          "level": "error",
+          "level": "note",
           "message": {
-            "text": "Unsanitized input from an HTTP parameter flows into find, where it is used in an NoSQL query. This may result in an NoSQL Injection vulnerability.",
-            "markdown": "Unsanitized input from {0} {1} into {2}, where it is used in an NoSQL query. This may result in an NoSQL Injection vulnerability.",
+            "text": "The type of this object, coming from query and the value of its split property can be controlled by the user. An attacker may craft the properties of the object to crash the application or bypass its logic. Consider checking the type of the object.",
+            "markdown": "The type of this {0}, coming from {1} and the value of its {2} property can be controlled by the user. An attacker may craft the properties of the object to crash the application or bypass its logic. Consider checking the type of the object.",
             "arguments": [
-              "[an HTTP parameter](0)",
-              "[flows](1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11)",
-              "[find](12)"
+              "[object](0)",
+              "[query](1)",
+              "[split](2)"
             ]
           },
           "locations": [
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "web_server/routes/zones.js",
+                  "uri": "web_server/routes/sonar.js",
                   "uriBaseId": "%SRCROOT%"
                 },
                 "region": {
-                  "startLine": 383,
-                  "endLine": 383,
-                  "startColumn": 37,
-                  "endColumn": 48
+                  "startLine": 53,
+                  "endLine": 53,
+                  "startColumn": 23,
+                  "endColumn": 28
                 }
               }
             }
           ],
           "fingerprints": {
-            "0": "a901b838023e765d468cec7449da72bb1cea6f304ebf4bc6ea3f2581713a0c56",
-            "1": "11a45176.4773f344.607187b5.d7919eeb.ef9f7d82.8020cfdf.09093c61.fbac866d.29386b0b.86f358a8.d0ce0b5d.c8688b2b.29fe289f.9d1196b2.09093c61.fbac866d"
+            "0": "a3d7c46d5e20148ac397f6eacfef0a3cae5a94f493754e707368b1889c17787a",
+            "1": "099c30d7.bf4464f1.c13ab5fc.d7919eeb.ef9f7d82.8020cfdf.83265159.5f8fd171.4b4ab437.bf4464f1.9816fd83.59162423.1ea4aa7e.5fce695c.83265159.89d75565"
           },
           "codeFlows": [
             {
@@ -2532,14 +769,14 @@
                         "id": 0,
                         "physicalLocation": {
                           "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
+                            "uri": "web_server/routes/sonar.js",
                             "uriBaseId": "%SRCROOT%"
                           },
                           "region": {
-                            "startLine": 380,
-                            "endLine": 380,
-                            "startColumn": 24,
-                            "endColumn": 29
+                            "startLine": 53,
+                            "endLine": 53,
+                            "startColumn": 17,
+                            "endColumn": 22
                           }
                         }
                       }
@@ -2549,14 +786,14 @@
                         "id": 1,
                         "physicalLocation": {
                           "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
+                            "uri": "web_server/routes/sonar.js",
                             "uriBaseId": "%SRCROOT%"
                           },
                           "region": {
-                            "startLine": 380,
-                            "endLine": 380,
-                            "startColumn": 24,
-                            "endColumn": 29
+                            "startLine": 215,
+                            "endLine": 215,
+                            "startColumn": 51,
+                            "endColumn": 56
                           }
                         }
                       }
@@ -2566,184 +803,14 @@
                         "id": 2,
                         "physicalLocation": {
                           "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
+                            "uri": "web_server/routes/sonar.js",
                             "uriBaseId": "%SRCROOT%"
                           },
                           "region": {
-                            "startLine": 380,
-                            "endLine": 380,
-                            "startColumn": 20,
-                            "endColumn": 29
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 3,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 380,
-                            "endLine": 380,
-                            "startColumn": 20,
-                            "endColumn": 37
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 4,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 383,
-                            "endLine": 383,
-                            "startColumn": 49,
-                            "endColumn": 56
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 5,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 63,
-                            "endLine": 63,
-                            "startColumn": 28,
-                            "endColumn": 35
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 6,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 67,
-                            "endLine": 67,
-                            "startColumn": 13,
-                            "endColumn": 20
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 7,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 68,
-                            "endLine": 68,
-                            "startColumn": 39,
-                            "endColumn": 46
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 8,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 69,
-                            "endLine": 69,
-                            "startColumn": 29,
-                            "endColumn": 34
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 9,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 69,
-                            "endLine": 69,
-                            "startColumn": 13,
-                            "endColumn": 18
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 10,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 74,
-                            "endLine": 74,
-                            "startColumn": 13,
-                            "endColumn": 18
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 11,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 75,
-                            "endLine": 75,
-                            "startColumn": 38,
-                            "endColumn": 43
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 12,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 75,
-                            "endLine": 75,
-                            "startColumn": 33,
-                            "endColumn": 37
+                            "startLine": 53,
+                            "endLine": 53,
+                            "startColumn": 23,
+                            "endColumn": 28
                           }
                         }
                       }
@@ -2754,250 +821,18 @@
             }
           ],
           "properties": {
-            "priorityScore": 875,
+            "priorityScore": 384,
             "priorityScoreFactors": [
               {
                 "label": true,
-                "type": "multipleOccurrence"
-              },
-              {
-                "label": true,
-                "type": "hotFileSource"
+                "type": "hotFileCodeFlow"
               },
               {
                 "label": true,
                 "type": "fixExamples"
               }
             ],
-            "isAutofixable": false
-          }
-        },
-        {
-          "ruleId": "javascript/reDOS",
-          "ruleIndex": 2,
-          "level": "error",
-          "message": {
-            "text": "Unsanitized user input from an HTTP parameter flows into RegExp, where it is used to build a regular expression. This may result in a Regular expression Denial of Service attack (reDOS).",
-            "markdown": "Unsanitized user input from {0} {1} into {2}, where it is used to build a regular expression. This may result in a Regular expression Denial of Service attack (reDOS).",
-            "arguments": [
-              "[an HTTP parameter](0)",
-              "[flows](1),(2),(3),(4),(5),(6),(7),(8)",
-              "[RegExp](9)"
-            ]
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "web_server/routes/zones.js",
-                  "uriBaseId": "%SRCROOT%"
-                },
-                "region": {
-                  "startLine": 383,
-                  "endLine": 383,
-                  "startColumn": 37,
-                  "endColumn": 48
-                }
-              }
-            }
-          ],
-          "fingerprints": {
-            "0": "9fa6b8e90e42bd11bfc59db6313d4b89c9f099d26552b9229d031d521ad5bbc9",
-            "1": "11a45176.4773f344.607187b5.d7919eeb.ef9f7d82.8020cfdf.09093c61.fbac866d.5a562d4f.86f358a8.d0ce0b5d.c8688b2b.29fe289f.f8890b3c.09093c61.fbac866d"
-          },
-          "codeFlows": [
-            {
-              "threadFlows": [
-                {
-                  "locations": [
-                    {
-                      "location": {
-                        "id": 0,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 380,
-                            "endLine": 380,
-                            "startColumn": 24,
-                            "endColumn": 29
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 1,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 380,
-                            "endLine": 380,
-                            "startColumn": 24,
-                            "endColumn": 29
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 2,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 380,
-                            "endLine": 380,
-                            "startColumn": 20,
-                            "endColumn": 29
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 3,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 380,
-                            "endLine": 380,
-                            "startColumn": 20,
-                            "endColumn": 37
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 4,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/routes/zones.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 383,
-                            "endLine": 383,
-                            "startColumn": 49,
-                            "endColumn": 56
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 5,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 63,
-                            "endLine": 63,
-                            "startColumn": 28,
-                            "endColumn": 35
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 6,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 67,
-                            "endLine": 67,
-                            "startColumn": 13,
-                            "endColumn": 20
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 7,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 68,
-                            "endLine": 68,
-                            "startColumn": 39,
-                            "endColumn": 46
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 8,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 68,
-                            "endLine": 68,
-                            "startColumn": 32,
-                            "endColumn": 53
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "location": {
-                        "id": 9,
-                        "physicalLocation": {
-                          "artifactLocation": {
-                            "uri": "web_server/config/models/zone.js",
-                            "uriBaseId": "%SRCROOT%"
-                          },
-                          "region": {
-                            "startLine": 68,
-                            "endLine": 68,
-                            "startColumn": 25,
-                            "endColumn": 31
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
-          "properties": {
-            "priorityScore": 809,
-            "priorityScoreFactors": [
-              {
-                "label": true,
-                "type": "hotFileSource"
-              },
-              {
-                "label": true,
-                "type": "fixExamples"
-              }
-            ],
-            "isAutofixable": false
+            "isAutofixable": true
           }
         }
       ],
@@ -3006,7 +841,7 @@
           {
             "isSupported": true,
             "lang": "JavaScript",
-            "files": 50,
+            "files": 49,
             "type": "SUPPORTED"
           }
         ]
