@@ -548,17 +548,6 @@ module.exports = function (envConfig) {
             if (req.query.hasOwnProperty('dataType') &&
                 req.query.dataType === 'links') {
                 graphPromise = graphLinksRecs.getGraphLinksByZone(req.params.zone);
-            } else if (req.query.hasOwnProperty('dataType') &&
-                req.query.dataType === 'config') {
-                graphPromise = graphRecs.getGraphConfigByZone(req.params.zone);
-            } else if (req.query.hasOwnProperty('dataType') &&
-                req.query.dataType === 'docs') {
-                graphPromise = graphDocsRecs.getGraphDocsByZone(req.params.zone);
-            } else if (req.query.hasOwnProperty('count') && req.query.count == "1") {
-                count = true;
-                graphPromise = graphDataRecs.getGraphCountByZone(req.params.zone)
-            } else {
-                graphPromise = graphDataRecs.getGraphDataByZone(req.params.zone);
             }
 
             graphPromise.then(function (data) {
