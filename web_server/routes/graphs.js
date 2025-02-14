@@ -972,7 +972,6 @@ module.exports = function (envConfig) {
                     res.status(404).json({ 'message': 'Zone not found' });
                     return;
                 }
-                // Fix the vulnerability here
                 const sanitizedData = sanitizeData(data);
                 res.status(200).json(sanitizedData);
                 return;
