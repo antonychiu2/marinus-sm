@@ -47,6 +47,8 @@ function is_valid_strings(params) {
         }
     }
     return true;
+    const validStrings = params.split(',').map(str => str.trim());
+    return validStrings.length === 1;
 }
 
 /**
@@ -545,7 +547,7 @@ module.exports = function (envConfig) {
                 return;
             }
 
-            if (!is_valid_strings(req.query)) {
+            if (!is_valid_strings(req.query.dataType)) {
                 res.status(400).json({ 'message': 'Multiple query parameters are not allowed.' });
                 return;
             }
@@ -714,7 +716,7 @@ module.exports = function (envConfig) {
     router.route('/tpd_graphs/:tpd')
         .get(function (req, res) {
 
-            if (!is_valid_strings(req.query)) {
+            if (!is_valid_strings(req.query.dataType)) {
                 res.status(400).json({ 'message': 'Multiple query parameters are not allowed.' });
                 return;
             }
@@ -876,7 +878,7 @@ module.exports = function (envConfig) {
     router.route('/cidr_graphs/:cidr')
         .get(function (req, res) {
 
-            if (!is_valid_strings(req.query)) {
+            if (!is_valid_strings(req.query.dataType)) {
                 res.status(400).json({ 'message': 'Multiple query parameters are not allowed.' });
                 return;
             }
@@ -1002,5 +1004,6 @@ function sanitizeData(data) {
         }
         return sanitizedData;
     }
+    return data;
     return data;
 }
