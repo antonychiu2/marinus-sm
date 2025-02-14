@@ -40,6 +40,13 @@ function is_valid_strings(params) {
         }
     }
     return true;
+    const validParams = ['zone', 'dataType', 'count'];
+    for (const param in params) {
+        if (params.hasOwnProperty(param) && validParams.indexOf(param) === -1) {
+            return false;
+        }
+    }
+    return true;
 }
 
 /**
@@ -983,4 +990,17 @@ function sanitizeData(data) {
     } else {
         return data;
     }
+    if (Array.isArray(data)) {
+        return data.map(sanitizeData);
+    }
+    if (typeof data === 'object') {
+        const sanitizedData = {};
+        for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+                sanitizedData[key] = sanitizeData(data[key]);
+            }
+        }
+        return sanitizedData;
+    }
+    return data;
 }
