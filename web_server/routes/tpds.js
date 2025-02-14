@@ -365,11 +365,11 @@ module.exports = function (envConfig) {
                 }
 
                 if (req.query.dataType === 'zone') {
-                    promise = tpdRecs.getTPDsByZone(sanitizeSqlLike(req.query.value), listOnly);
+                    promise = tpdRecs.getTPDsByZone(tpdRecs.sanitizeSqlLike(req.query.value), listOnly);
                 } else if (req.query.dataType === 'tpd') {
-                    promise = tpdRecs.getTPDsByTPD(sanitizeSqlLike(req.query.value));
+                    promise = tpdRecs.getTPDsByTPD(tpdRecs.sanitizeSqlLike(req.query.value));
                 } else if (req.query.dataType === 'wildcard') {
-                    promise = tpdRecs.getTPDsByWildcard(sanitizeSqlLike(req.query.value), listOnly);
+                    promise = tpdRecs.getTPDsByWildcard(tpdRecs.sanitizeSqlLike(req.query.value), listOnly);
                 } else {
                     res.status(400).json({ 'message': 'An unknown data type was provided.' });
                     return;
