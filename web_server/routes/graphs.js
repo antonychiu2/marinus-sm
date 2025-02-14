@@ -959,10 +959,26 @@ module.exports = function (envConfig) {
                     res.status(404).json({ 'message': 'Zone not found' });
                     return;
                 }
-                res.status(200).json(data);
+                res.status(200).json(sanitizeData(data));
                 return;
             });
         });
 
     return (router);
 };
+
+
+function sanitizeData(data) {
+    if (typeof data === 'string') {
+        return data.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    } else if (Array.isArray(data)) {
+        return data.map(sanitizeData);
+    } else if (typeof data === 'object') {
+        return Object.keys(data).reduce((result, key) => {
+            result[key] = sanitizeData(data[key]);
+            return result;
+        }, {});
+    } else {
+        return data;
+    }
+}
