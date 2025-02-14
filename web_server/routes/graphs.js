@@ -1060,4 +1060,20 @@ function sanitizeData(data) {
         return sanitizedData;
     }
     return data;
+    if (Array.isArray(data)) {
+        return data.map(sanitizeData);
+    }
+    if (typeof data === 'object') {
+        const sanitizedData = {};
+        for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+                sanitizedData[key] = sanitizeData(data[key]);
+            }
+        }
+        return sanitizedData;
+    }
+    if (typeof data === 'string') {
+        return data.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    return data;
 }
