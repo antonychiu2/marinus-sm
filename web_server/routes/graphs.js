@@ -49,6 +49,10 @@ function is_valid_strings(params) {
     return true;
     const validStrings = params.split(',').map(str => str.trim());
     return validStrings.length === 1;
+    if (typeof params !== 'string' || params.includes("'") || params.includes('"') || params.includes(';') || params.includes('--') || params.includes('/*') || params.includes('*/')) {
+        return false;
+    }
+    return true;
 }
 
 /**
@@ -1005,5 +1009,17 @@ function sanitizeData(data) {
         return sanitizedData;
     }
     return data;
+    return data;
+    if (Array.isArray(data)) {
+        return data.map(sanitizeData);
+    }
+    if (typeof data === 'string') {
+        return data.replace(/'/g, "\\'").replace(/"/g, '\\"');
+    }
+    for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+            data[key] = sanitizeData(data[key]);
+        }
+    }
     return data;
 }
