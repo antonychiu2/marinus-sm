@@ -1043,4 +1043,21 @@ function sanitizeData(data) {
             .replace(/'/g, '&#039;');
     }
     return data;
+    if (typeof data === 'string') {
+        return sanitizeHtml(data, {
+            allowedTags: [],
+            allowedAttributes: {},
+        });
+    }
+    if (Array.isArray(data)) {
+        return data.map(sanitizeData);
+    }
+    if (typeof data === 'object') {
+        const sanitizedData = {};
+        for (const key in data) {
+            sanitizedData[key] = sanitizeData(data[key]);
+        }
+        return sanitizedData;
+    }
+    return data;
 }
