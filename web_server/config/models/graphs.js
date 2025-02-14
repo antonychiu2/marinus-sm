@@ -12,6 +12,7 @@
  * governing permissions and limitations under the License.
  */
 
+const mongoSanitize = require('express-mongo-sanitize');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -32,9 +33,9 @@ const graphModel = mongoose.model('graphModel', graphSchema);
 module.exports = {
     GraphModel: graphModel,
     getGraphConfigByZone: function (zone) {
-        let limitQuery = { 'config': 1 };
+        let limitQuery = { 'config': mongoSanitize.sanitize({ data: 1 }).data };
         return graphModel.findOne({
-            'zone': zone,
+            'zone': mongoSanitize.sanitize({ data: zone }).data,
         }, limitQuery).exec();
     },
     getGraphCountByZone: function (zone) {

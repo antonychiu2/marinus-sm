@@ -40,6 +40,19 @@ function is_valid_strings(params) {
         }
     }
     return true;
+    const validParams = ['zone', 'dataType', 'count'];
+    for (const param in params) {
+        if (params.hasOwnProperty(param) && validParams.indexOf(param) === -1) {
+            return false;
+        }
+    }
+    return true;
+    const validStrings = params.split(',').map(str => str.trim());
+    return validStrings.length === 1;
+    if (typeof params !== 'string' || params.includes("'") || params.includes('"') || params.includes(';') || params.includes('--') || params.includes('/*') || params.includes('*/')) {
+        return false;
+    }
+    return true;
 }
 
 /**
@@ -538,7 +551,7 @@ module.exports = function (envConfig) {
                 return;
             }
 
-            if (!is_valid_strings(req.query)) {
+            if (!is_valid_strings(req.query.dataType)) {
                 res.status(400).json({ 'message': 'Multiple query parameters are not allowed.' });
                 return;
             }
@@ -707,7 +720,7 @@ module.exports = function (envConfig) {
     router.route('/tpd_graphs/:tpd')
         .get(function (req, res) {
 
-            if (!is_valid_strings(req.query)) {
+            if (!is_valid_strings(req.query.dataType)) {
                 res.status(400).json({ 'message': 'Multiple query parameters are not allowed.' });
                 return;
             }
@@ -869,7 +882,7 @@ module.exports = function (envConfig) {
     router.route('/cidr_graphs/:cidr')
         .get(function (req, res) {
 
-            if (!is_valid_strings(req.query)) {
+            if (!is_valid_strings(req.query.dataType)) {
                 res.status(400).json({ 'message': 'Multiple query parameters are not allowed.' });
                 return;
             }
@@ -882,13 +895,13 @@ module.exports = function (envConfig) {
             let graphPromise;
             if (req.query.hasOwnProperty('dataType') &&
                 req.query.dataType === 'links') {
-                graphPromise = cidrGraphRecs.getCIDRGraphLinksByZone(req.params.cidr);
-            } else if (req.query.hasOwnProperty('dataType') &&
-                req.query.dataType === 'config') {
-                graphPromise = cidrGraphRecs.getCIDRGraphConfigByZone(req.params.cidr);
-            } else {
-                graphPromise = cidrGraphRecs.getCIDRGraphDataByZone(req.params.cidr);
-            }
+                    graphPromise = cidrGraphRecs.getCIDRGraphLinksByZone(req.params.cidr);
+                } else if (req.query.hasOwnProperty('dataType') &&
+                    req.query.dataType === 'config') {
+                    graphPromise = cidrGraphRecs.getCIDRGraphConfigByZone(req.params.cidr);
+                } else {
+                    graphPromise = cidrGraphRecs.getCIDRGraphDataByZone(req.params.cidr);
+                }
 
             graphPromise.then(function (data) {
                 if (!data) {
@@ -959,10 +972,107 @@ module.exports = function (envConfig) {
                     res.status(404).json({ 'message': 'Zone not found' });
                     return;
                 }
-                res.status(200).json(data);
+                const sanitizedData = sanitizeData(data);
+                res.status(200).json(sanitizedData);
                 return;
             });
         });
 
     return (router);
 };
+
+
+function sanitizeData(data) {
+    if (typeof data === 'string') {
+        return data.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    } else if (Array.isArray(data)) {
+        return data.map(sanitizeData);
+    } else if (typeof data === 'object') {
+        return Object.keys(data).reduce((result, key) => {
+            result[key] = sanitizeData(data[key]);
+            return result;
+        }, {});
+    } else {
+        return data;
+    }
+    if (Array.isArray(data)) {
+        return data.map(sanitizeData);
+    }
+    if (typeof data === 'object') {
+        const sanitizedData = {};
+        for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+                sanitizedData[key] = sanitizeData(data[key]);
+            }
+        }
+        return sanitizedData;
+    }
+    return data;
+    return data;
+    if (Array.isArray(data)) {
+        return data.map(sanitizeData);
+    }
+    if (typeof data === 'string') {
+        return data.replace(/'/g, "\\'").replace(/"/g, '\\"');
+    }
+    for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+            data[key] = sanitizeData(data[key]);
+        }
+    }
+    return data;
+    if (Array.isArray(data)) {
+        return data.map(sanitizeData);
+    }
+    if (typeof data === 'object') {
+        const sanitizedData = {};
+        for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+                sanitizedData[key] = sanitizeData(data[key]);
+            }
+        }
+        return sanitizedData;
+    }
+    if (typeof data === 'string') {
+        return data
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+    return data;
+    if (typeof data === 'string') {
+        return sanitizeHtml(data, {
+            allowedTags: [],
+            allowedAttributes: {},
+        });
+    }
+    if (Array.isArray(data)) {
+        return data.map(sanitizeData);
+    }
+    if (typeof data === 'object') {
+        const sanitizedData = {};
+        for (const key in data) {
+            sanitizedData[key] = sanitizeData(data[key]);
+        }
+        return sanitizedData;
+    }
+    return data;
+    if (Array.isArray(data)) {
+        return data.map(sanitizeData);
+    }
+    if (typeof data === 'object') {
+        const sanitizedData = {};
+        for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+                sanitizedData[key] = sanitizeData(data[key]);
+            }
+        }
+        return sanitizedData;
+    }
+    if (typeof data === 'string') {
+        return data.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    return data;
+}
