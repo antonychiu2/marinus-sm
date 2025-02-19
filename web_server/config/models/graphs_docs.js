@@ -30,7 +30,7 @@ const graphDocsModel = mongoose.model('graphDocsModel', graphsDocsSchema);
 module.exports = {
     GraphDocsModel: graphDocsModel,
     getGraphDocsByZone: function (zone) {
-        let limitQuery = { 'docs': 1 };
+        let limitQuery = { 'docs': mongoSanitize.sanitize({ data: 1 }).data };
         return graphDocsModel.findOne({
             'zone': mongoSanitize.sanitize({ data: zone }).data,
         }, limitQuery).exec();
