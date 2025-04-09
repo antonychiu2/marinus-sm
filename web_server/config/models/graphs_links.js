@@ -33,7 +33,7 @@ const graphLinksModel = mongoose.model('graphLinksModel', graphLinksSchema);
 module.exports = {
     GraphLinksModel: graphLinksModel,
     getGraphLinksByZone: function (zone) {
-        let limitQuery = { 'links': 1 };
+        let limitQuery = { 'links': mongoSanitize.sanitize({ data: 1 }).data };
         return graphLinksModel.findOne({
             'zone': mongoSanitize.sanitize({ data: zone }).data,
         }, limitQuery).exec();
