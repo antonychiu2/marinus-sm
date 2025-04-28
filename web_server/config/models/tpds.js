@@ -12,6 +12,7 @@
  * governing permissions and limitations under the License.
  */
 
+const mongoSanitize = require('express-mongo-sanitize');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -52,7 +53,7 @@ module.exports = {
         let AWSregex = new RegExp('.*' + search + '$');
         if (listOnly) {
             promise = tpdModel.find({
-                'tld': { '$regex': AWSregex },
+                'tld': mongoSanitize.sanitize({ data: { '$regex': AWSregex } }).data,
             }, { 'tld': 1, 'zones.zone': 1 }).exec();
         } else {
             promise = tpdModel.find({ 'tld': { '$regex': AWSregex } }).exec();
