@@ -12,7 +12,6 @@
  * governing permissions and limitations under the License.
  */
 
-const mongoSanitize = require('express-mongo-sanitize');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -37,26 +36,26 @@ module.exports = {
     getTPDsByZone: function (zone, listOnly) {
         let promise;
         if (!listOnly) {
-            promise = tpdModel.find({ 'zones.zone': mongoSanitize.sanitize({ data: zone }).data }).exec();
+            promise = tpdModel.find({ 'zones.zone': zone }).exec();
         } else {
             promise = tpdModel.find({
-                'zones.zone': mongoSanitize.sanitize({ data: zone }).data,
+                'zones.zone': zone,
             }, { 'tld': 1, 'zones.zone': 1 }).exec();
         }
         return (promise);
     },
     getTPDsByTPD: function (tpd) {
-        return tpdModel.findOne({ 'tld': mongoSanitize.sanitize({ data: tpd }).data });
+        return tpdModel.findOne({ 'tld': tpd });
     },
     getTPDsByWildcard: function (search, listOnly) {
         let promise;
         let AWSregex = new RegExp('.*' + search + '$');
         if (listOnly) {
             promise = tpdModel.find({
-                'tld': mongoSanitize.sanitize({ data: { '$regex': AWSregex } }).data,
+                'tld': { '$regex': AWSregex },
             }, { 'tld': 1, 'zones.zone': 1 }).exec();
         } else {
-            promise = tpdModel.find({ 'tld': mongoSanitize.sanitize({ data: { '$regex': AWSregex } }).data }).exec();
+            promise = tpdModel.find({ 'tld': { '$regex': AWSregex } }).exec();
         }
         return (promise);
     },
