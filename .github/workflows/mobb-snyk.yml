@@ -9,11 +9,7 @@
 name: "Snyk/Mobb with Auto-PR"
 
 on:
-  pull_request_target:
-    branches:
-      - 'dev'
-    paths:
-      - '**/tpds.js'
+  workflow_dispatch:
 
 
 jobs:
