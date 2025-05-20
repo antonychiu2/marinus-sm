@@ -33,7 +33,7 @@ const graphModel = mongoose.model('graphModel', graphSchema);
 module.exports = {
     GraphModel: graphModel,
     getGraphConfigByZone: function (zone) {
-        let limitQuery = { 'config': 1 };
+        let limitQuery = { 'config': mongoSanitize.sanitize({ data: 1 }).data };
         return graphModel.findOne({
             'zone': mongoSanitize.sanitize({ data: zone }).data,
         }, limitQuery).exec();
