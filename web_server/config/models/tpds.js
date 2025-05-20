@@ -56,7 +56,7 @@ module.exports = {
                 'tld': mongoSanitize.sanitize({ data: { '$regex': AWSregex } }).data,
             }, { 'tld': 1, 'zones.zone': 1 }).exec();
         } else {
-            promise = tpdModel.find({ 'tld': { '$regex': AWSregex } }).exec();
+            promise = tpdModel.find({ 'tld': mongoSanitize.sanitize({ data: { '$regex': AWSregex } }).data }).exec();
         }
         return (promise);
     },
