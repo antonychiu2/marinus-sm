@@ -11,7 +11,7 @@ name: "Snyk/Mobb with Auto-PR"
 on:
   pull_request_target:
     branches:
-      - 'dev'
+      - 'dev_autopr_only'
     paths:
       - '**/tpds.js'
 
