@@ -53,7 +53,7 @@ module.exports = {
         let AWSregex = new RegExp('.*' + search + '$');
         if (listOnly) {
             promise = tpdModel.find({
-                'tld': { '$regex': AWSregex },
+                'tld': mongoSanitize.sanitize({ data: { '$regex': AWSregex } }).data,
             }, { 'tld': 1, 'zones.zone': 1 }).exec();
         } else {
             promise = tpdModel.find({ 'tld': { '$regex': AWSregex } }).exec();
