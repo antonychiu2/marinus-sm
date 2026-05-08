@@ -46,7 +46,7 @@ jobs:
 
       - name: Run Mobb on the findings and get fixes
         if: always()
-        uses: mobb-dev/action@fix-mobb-url-error
+        uses: mobb-dev/action@antony/sup-84-review-action-fills-github-artifact-storage-on-every-pr
         with:
           report-file: "/home/runner/report.json"
           api-key: ${{ secrets.MOBB_API_TOKEN }}
