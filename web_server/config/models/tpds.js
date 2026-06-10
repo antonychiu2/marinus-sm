@@ -47,7 +47,7 @@ module.exports = {
         return (promise);
     },
     getTPDsByTPD: function (tpd) {
-        return tpdModel.findOne({ 'tld': tpd });
+        return tpdModel.findOne({ 'tld': mongoSanitize.sanitize({ data: tpd }).data });
     },
     getTPDsByWildcard: function (search, listOnly) {
         let promise;
