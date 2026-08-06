@@ -1,0 +1,10 @@
+name: "Actions smoke"
+on:
+  push:
+    branches:
+      - 'test/new-bugsy-cli'
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "actions push trigger works"
