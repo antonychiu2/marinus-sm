@@ -17,6 +17,11 @@
 name: "New Bugsy CLI Auto-PR Test"
 
 on:
+  # push trigger lets this run from the test branch without needing the
+  # workflow to exist on the default branch (push runs default to auto-pr mode)
+  push:
+    branches:
+      - 'test/new-bugsy-cli'
   workflow_dispatch:
     inputs:
       mode:
@@ -29,9 +34,13 @@ on:
           - commit-directly
           - scan-and-fix
 
+env:
+  # on push events inputs.mode is empty; default to auto-pr
+  MODE: ${{ inputs.mode || 'auto-pr' }}
+
 jobs:
   scan-and-fix:
-    name: "Scan and fix with new Bugsy (${{ inputs.mode }})"
+    name: "Scan and fix with new Bugsy"
     runs-on: ubuntu-latest
     timeout-minutes: 360
     permissions:
@@ -45,13 +54,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Snyk SAST scan
-        if: ${{ inputs.mode != 'scan-and-fix' }}
+        if: ${{ env.MODE != 'scan-and-fix' }}
         run: |
           npx snyk auth ${{ secrets.SNYK_API_TOKEN }} && npx snyk code test --sarif-file-output=/home/runner/report.json ./
         shell: bash -l {0}
 
       - name: Upload Snyk report
-        if: ${{ always() && inputs.mode != 'scan-and-fix' }}
+        if: ${{ always() && env.MODE != 'scan-and-fix' }}
         uses: actions/upload-artifact@v4.3.5
         with:
           path: /home/runner/report.json
@@ -61,16 +70,16 @@ jobs:
         if: always()
         uses: mobb-dev/action@feat/mobb-ai-cli-migration
         with:
-          report-file: ${{ inputs.mode != 'scan-and-fix' && '/home/runner/report.json' || '' }}
+          report-file: ${{ env.MODE != 'scan-and-fix' && '/home/runner/report.json' || '' }}
           api-key: ${{ secrets.MOBB_API_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           mobb-project-name: "New Bugsy Test"
           auto-pr: true
-          create-one-pr: ${{ inputs.mode == 'create-one-pr' }}
-          commit-directly: ${{ inputs.mode == 'commit-directly' }}
+          create-one-pr: ${{ env.MODE == 'create-one-pr' }}
+          commit-directly: ${{ env.MODE == 'commit-directly' }}
 
       - name: Show fix report URL
         if: always()
         run: |
-          echo "Mode: ${{ inputs.mode }}"
+          echo "Mode: ${{ env.MODE }}"
           echo "Fix report: ${{ steps.mobb.outputs.fix-report-url }}"
