@@ -1,0 +1,76 @@
+# New Bugsy (@mobb.ai/cli) auto-PR / auto-commit test
+#
+# Exercises mobb-dev/action@feat/mobb-ai-cli-migration (PR #38), which runs
+# `npx --yes @mobb.ai/cli@latest analyze --ci ...` instead of legacy mobbdev.
+# Modeled on the proven legacy flow in mobb-snyk.yml (Snyk SARIF -> Mobb action
+# with auto-pr) that produced e.g. antonychiu2/marinus-sm#189.
+#
+# Trigger manually (Actions tab -> run workflow) and pick a mode:
+#   auto-pr           one PR per fix                     (--auto-pr)
+#   create-one-pr     one unified PR for all fixes       (--auto-pr --create-one-pr)
+#   commit-directly   commit fixes straight to branch    (--auto-pr --commit-directly)
+#   scan-and-fix      no Snyk report; Mobb's own scanner + --auto-pr
+#
+# Secrets used (already configured on this repo):
+#   SNYK_API_TOKEN, MOBB_API_TOKEN, GITHUB_TOKEN (automatic)
+
+name: "New Bugsy CLI Auto-PR Test"
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Fix delivery mode"
+        type: choice
+        default: auto-pr
+        options:
+          - auto-pr
+          - create-one-pr
+          - commit-directly
+          - scan-and-fix
+
+jobs:
+  scan-and-fix:
+    name: "Scan and fix with new Bugsy (${{ inputs.mode }})"
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      pull-requests: write
+      statuses: write
+      contents: read
+      actions: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Snyk SAST scan
+        if: ${{ inputs.mode != 'scan-and-fix' }}
+        run: |
+          npx snyk auth ${{ secrets.SNYK_API_TOKEN }} && npx snyk code test --sarif-file-output=/home/runner/report.json ./
+        shell: bash -l {0}
+
+      - name: Upload Snyk report
+        if: ${{ always() && inputs.mode != 'scan-and-fix' }}
+        uses: actions/upload-artifact@v4.3.5
+        with:
+          path: /home/runner/report.json
+
+      - name: Run new Bugsy (@mobb.ai/cli) on the findings
+        id: mobb
+        if: always()
+        uses: mobb-dev/action@feat/mobb-ai-cli-migration
+        with:
+          report-file: ${{ inputs.mode != 'scan-and-fix' && '/home/runner/report.json' || '' }}
+          api-key: ${{ secrets.MOBB_API_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          mobb-project-name: "New Bugsy Test"
+          auto-pr: true
+          create-one-pr: ${{ inputs.mode == 'create-one-pr' }}
+          commit-directly: ${{ inputs.mode == 'commit-directly' }}
+
+      - name: Show fix report URL
+        if: always()
+        run: |
+          echo "Mode: ${{ inputs.mode }}"
+          echo "Fix report: ${{ steps.mobb.outputs.fix-report-url }}"
