@@ -1,0 +1,78 @@
+# Mobb/Snyk Fixer on pull requests - NEW BUGSY (@mobb.ai/cli) variant
+# Same flow as mobb-snyk.yml, but runs the migrated action
+# (mobb-dev/action@feat/mobb-ai-cli-migration) which invokes the new
+# standalone-binary CLI: `npx --yes @mobb.ai/cli@latest analyze --ci ...`
+#
+# Flow: Snyk Code scan on every PR touching **/tpds.js -> SARIF report ->
+# Mobb analyzes it and, with auto-pr + commit-directly + the PR number,
+# commits the fixes directly onto the PR branch (see e.g. PR #189).
+#
+# Changes vs mobb-snyk.yml, from review:
+#  - action ref: @fix-mobb-url-error (stale bugfix branch) -> @feat/mobb-ai-cli-migration
+#  - snyk exit code 1 just means "vulns found" - tolerate it so the run
+#    conclusion reflects Mobb's result instead of always failing; real Snyk
+#    errors (exit >= 2) still fail the job
+#  - explicit artifact name to avoid v4 name collision with mobb-snyk.yml
+#
+# Secrets in use (already configured on this repo):
+# SNYK_API_TOKEN - your Snyk user credentials
+# MOBB_API_TOKEN - your Mobb user credentials
+# GITHUB_TOKEN   - automatically set by GitHub
+
+name: "Snyk/New Bugsy with Auto-PR"
+
+on:
+  pull_request_target:
+    branches:
+      - 'dev'
+    paths:
+      - '**/tpds.js'
+
+jobs:
+  scan-and-fix:
+    name: Scan with Snyk and fix with new Bugsy Auto-PR
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 360
+    permissions:
+      pull-requests: write
+      statuses: write
+      contents: read
+      actions: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Run Snyk SAST scan
+        run: |
+          npx snyk auth ${{ secrets.SNYK_API_TOKEN }}
+          set +e
+          npx snyk code test --sarif-file-output=/home/runner/report.json ./
+          SNYK_EXIT=$?
+          set -e
+          # exit 1 = vulnerabilities found (expected here); >=2 = real error
+          if [ "$SNYK_EXIT" -ge 2 ]; then
+            echo "::error::snyk code test failed with exit $SNYK_EXIT"
+            exit $SNYK_EXIT
+          fi
+        shell: bash -l {0}
+
+      - name: Upload Report
+        if: always()
+        uses: actions/upload-artifact@v4.3.5
+        with:
+          name: snyk-report-newbugsy
+          path: /home/runner/report.json
+
+      - name: Run new Bugsy on the findings and get fixes
+        if: always()
+        uses: mobb-dev/action@feat/mobb-ai-cli-migration
+        with:
+          report-file: "/home/runner/report.json"
+          api-key: ${{ secrets.MOBB_API_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          mobb-project-name: "New Bugsy Test"
+          auto-pr: true
+          commit-directly: true
